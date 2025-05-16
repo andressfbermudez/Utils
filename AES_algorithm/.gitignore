@@ -1,0 +1,25 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entorno virtual
+venv/
+.env/
+.venv/
+
+# Configuración de PyCharm
+.idea/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de logs
+*.log
+
+# Bases de datos locales
+*.sqlite3
+
+# Checkpoints de Jupyter
+.ipynb_checkpoints
