@@ -1,0 +1,19 @@
+Crear un entorno virtual:
+	python3 -m venv env
+
+Instalar paquetes:
+	pip install [package_name]
+
+Crear el archivo requirements.txt:
+	pip freeze > requirements.txt
+
+Ejecutar un script:
+	python3 [script_name]
+
+Verificar si python esta instalado:
+	python3 --version
+
+Crear un ejecutable:
+	pip install pyinstaller
+	pyinstaller --onefile [script_name.py]
+
