@@ -1,0 +1,14 @@
+Eliminar un archivo del último commit en adelante después de agregarlo al .gitignore:
+	git rm --cached [path_archive]
+	git commit -m "Eliminar archivo del repositorio"
+	git push
+
+Eliminarlo completamente del historial de commits:
+	git filter-branch --force --index-filter \
+	"git rm --cached --ignore-unmatch [path_archive]" \
+	--prune-empty --tag-name-filter cat -- --all
+
+	git push origin --force --all
+	git push origin --force --tags
+
+
