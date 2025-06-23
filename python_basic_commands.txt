@@ -1,7 +1,7 @@
 Crear un entorno virtual:
-	python3 -m venv env
+	python3 -m venv venv
 	
-Ejecutar un entorno virtual:
+Activar un entorno virtual:
 	Windows: venv\Scripts\activate 
 	Linux: source venv/bin/activate
 
