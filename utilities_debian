@@ -1,0 +1,42 @@
+#!/bin/bash
+echo ":::::::::: Bienvenido a las utilidades del sistema ::::::::::"
+echo "	1. Actualizar el sistema"
+echo "	2. Escanear todo el sistema en busca de virus"
+echo "	3. Escanear un directorio en busca de virus"
+echo "	4. Escanear un archivo en busca de virus"
+
+printf "Tu opcion: "
+read entryuser
+
+if [ "$entryuser" = 1 ]; then
+	sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt clean -y
+	printf "\nSe ha actualizado el sistema\n"
+  
+elif [ "$entryuser" = 2 ]; then
+	# Actualizar la base de datos de virus
+	sudo freshclam
+	# Iniciar el escaneo
+	sudo clamscan -r --bell /
+	printf "\nHa finalizado el escaneo del sistema en busca de virus\n"
+  
+elif [ "$entryuser" = 3 ]; then
+	printf "\nIngresa la ruta del directorio: "
+	read path
+	# Actualizar la base de datos de virus
+	sudo freshclam
+	# Iniciar el escaneo
+	sudo clamscan -r $path
+	printf "\nHa finalizado el escaneo del directorio ($path)\n"
+
+elif [ "$entryuser" = 4 ]; then
+	printf "\nIngresa la ruta del archivo: "
+	read path
+	# Actualizar la base de datos de virus
+	sudo freshclam
+	# Iniciar el escaneo
+	sudo clamscan $path
+	printf "\nHa finalizado el escaneo del archivo ($path)\n"
+else
+	echo "Opcion incorrecta"
+fi
+

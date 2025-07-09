@@ -1,0 +1,87 @@
+#!/bin/bash
+
+echo ":::::::::: Bienvenido a las utilidades del sistema ::::::::::"
+echo "	1. Actualizar el sistema"
+echo "	2. Escanear todo el sistema en busca de virus"
+echo "	3. Escanear un directorio en busca de virus"
+echo "	4. Escanear un archivo en busca de virus"
+echo "	0. Salir"
+
+printf "Tu opción: "
+read entryuser
+
+if [ "$entryuser" = 0 ]; then
+	exit 1
+
+elif [ "$entryuser" = 1 ]; then
+	BACKUP_DIR="$HOME/arch-backup-$(date +%F)"
+	mkdir -p "$BACKUP_DIR/hooks"
+	mkdir -p "$BACKUP_DIR/gnome-extensions"
+
+	# Archivos de configuración del sistema
+	cp -a /etc/mkinitcpio.conf /etc/pacman.conf /etc/fstab /etc/locale.* /etc/hostname /etc/hosts "$BACKUP_DIR" 2>/dev/null
+	cp -a /etc/vconsole.conf /etc/locale.gen /etc/crypttab /etc/default/grub "$BACKUP_DIR" 2>/dev/null
+	cp -a /etc/mkinitcpio.d/* "$BACKUP_DIR" 2>/dev/null
+	cp -a /boot/loader/entries/*.conf "$BACKUP_DIR" 2>/dev/null 2>/dev/null  # si usas systemd-boot
+	cp -a /etc/systemd/system/*.service "$BACKUP_DIR" 2>/dev/null
+	cp -a /etc/sudoers /etc/sudoers.d/ "$BACKUP_DIR" 2>/dev/null
+	cp -a /etc/pacman.d/hooks "$BACKUP_DIR/hooks" 2>/dev/null
+
+	# Listas de paquetes
+	pacman -Qqe > "$BACKUP_DIR/pkglist.txt"
+	pacman -Qqen > "$BACKUP_DIR/pkglist-repo.txt"
+	pacman -Qqem > "$BACKUP_DIR/pkglist-aur.txt"
+
+	# Configuraciones de usuario
+	cp -a ~/.bashrc ~/.zshrc ~/.xinitrc ~/.profile ~/.gitconfig "$BACKUP_DIR" 2>/dev/null
+
+	# Configuración de GNOME
+	dconf dump / > "$BACKUP_DIR/gnome-settings-backup.ini"
+	cp -a ~/.config/monitors.xml "$BACKUP_DIR" 2>/dev/null
+	cp -a ~/.config/gtk-3.0/settings.ini "$BACKUP_DIR" 2>/dev/null
+	cp -a ~/.config/gtk-4.0/settings.ini "$BACKUP_DIR" 2>/dev/null
+	cp -a ~/.config/mimeapps.list "$BACKUP_DIR" 2>/dev/null
+	cp -a ~/.local/share/gnome-shell/extensions/* "$BACKUP_DIR/gnome-extensions" 2>/dev/null
+	cp -a ~/.themes ~/.icons "$BACKUP_DIR" 2>/dev/null
+
+	echo "🗂️ Backup guardado en $BACKUP_DIR"
+
+	# Actualizar y limpiar el sistema
+	sudo pacman -Syu
+
+	orphans=$(pacman -Qtdq)
+	if [ -n "$orphans" ]; then
+		sudo pacman -Rns $orphans
+	fi
+
+	sudo paccache -rk1
+	sudo journalctl --vacuum-time=2weeks
+
+	printf "\n✅ Se ha actualizado y limpiado el sistema\n"
+
+elif [ "$entryuser" = 2 ]; then
+	# Escaneo completo del sistema
+	sudo freshclam
+	sudo clamscan -r --bell -i /
+	printf "\n✅ Ha finalizado el escaneo del sistema en busca de virus\n"
+
+elif [ "$entryuser" = 3 ]; then
+	# Escaneo de un directorio
+	printf "\n📁 Ingresa la ruta del directorio: "
+	read -r path
+	sudo freshclam
+	sudo clamscan -r -i "$path"
+	printf "\n✅ Ha finalizado el escaneo del directorio: $path\n"
+
+elif [ "$entryuser" = 4 ]; then
+	# Escaneo de un archivo
+	printf "\n📄 Ingresa la ruta del archivo: "
+	read -r path
+	sudo freshclam
+	sudo clamscan -i "$path"
+	printf "\n✅ Ha finalizado el escaneo del archivo: $path\n"
+
+else
+	echo "❌ Opción incorrecta"
+fi
+
