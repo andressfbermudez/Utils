@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Created-By: Andres Bermudez
-Main-Class: Bienvenida
-X-COMMENT: Curso Java
-
-
-
