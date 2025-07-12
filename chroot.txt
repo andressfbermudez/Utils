@@ -1,0 +1,11 @@
+# Para montar el sistema
+sudo mount /dev/nvme0n1p6 /mnt/arch                    
+sudo mount --bind /dev /mnt/arch/dev
+sudo mount --bind /dev/pts /mnt/arch/dev/pts
+sudo mount --bind /proc /mnt/arch/proc
+sudo mount --bind /sys /mnt/arch/sys
+sudo mount --bind /run /mnt/arch/run
+sudo cp /etc/resolv.conf /mnt/arch/etc/resolv.conf
+
+# Para iniciar el sistema
+sudo chroot /mnt/arch /bin/bash 
